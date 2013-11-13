@@ -9,10 +9,15 @@ this_include_HEADERS = \
     basket.hpp \
     binomiallossmodel.hpp \
     blackcdsoptionengine.hpp \
+	blackcmcdsengine.hpp \
     cdo.hpp \
     cdsoption.hpp \
     constantlosslatentmodel.hpp \
     correlationstructure.hpp \
+	constantmaturitycds.hpp \
+	creditcmcoupon.hpp \
+	creditcouponpricer.hpp \
+	creditindex.hpp \
     defaultevent.hpp \
     defaultlossmodel.hpp \
     defaultprobabilitykey.hpp \
@@ -52,9 +57,14 @@ libCredit_la_SOURCES = \
     basecorrelationstructure.cpp \
     basket.cpp \
     blackcdsoptionengine.cpp \
+	blackcmcdsengine.cpp \
     cdo.cpp \
     cdsoption.cpp \
     correlationstructure.cpp \
+    constantmaturitycds.cpp \
+	creditcmcoupon.cpp \
+	creditcouponpricer.cpp \
+	creditindex.cpp \
     defaultevent.cpp \
     defaultprobabilitykey.cpp \
     defaulttype.cpp \
