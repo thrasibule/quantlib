@@ -6,10 +6,15 @@
 #include <ql/experimental/credit/basket.hpp>
 #include <ql/experimental/credit/binomiallossmodel.hpp>
 #include <ql/experimental/credit/blackcdsoptionengine.hpp>
+#include <ql/experimental/credit/blackcmcdsengine.hpp>
 #include <ql/experimental/credit/cdo.hpp>
 #include <ql/experimental/credit/cdsoption.hpp>
 #include <ql/experimental/credit/constantlosslatentmodel.hpp>
 #include <ql/experimental/credit/correlationstructure.hpp>
+#include <ql/experimental/credit/constantmaturitycds.hpp>
+#include <ql/experimental/credit/creditcmcoupon.hpp>
+#include <ql/experimental/credit/creditcouponpricer.hpp>
+#include <ql/experimental/credit/creditindex.hpp>
 #include <ql/experimental/credit/defaultevent.hpp>
 #include <ql/experimental/credit/defaultlossmodel.hpp>
 #include <ql/experimental/credit/defaultprobabilitykey.hpp>
