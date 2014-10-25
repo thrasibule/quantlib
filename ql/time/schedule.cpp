@@ -387,24 +387,22 @@ namespace QuantLib {
                     dates_.front() = Date::endOfMonth(dates_.front());
             }
         } else {
-            // first date not adjusted for CDS schedules
+            // first date not adjusted for old CDS schedules
             if (*rule_ != DateGeneration::OldCDS)
-            if (*rule_ != DateGeneration::OldCDS && rule_ != DateGeneration::CDS)
                 dates_[0] = calendar_.adjust(dates_[0], convention);
             for (Size i=1; i<dates_.size()-1; ++i)
                 dates_[i] = calendar_.adjust(dates_[i], convention);
 
             // termination date is NOT adjusted as per ISDA
             // specifications, unless otherwise specified in the
-            // confirmation of the deal or unless we're creating a CDS
+            // confirmation of the deal or unless we're creating an old CDS
             // schedule
             if (terminationDateConvention != Unadjusted
                 || *rule_ == DateGeneration::Twentieth
                 || *rule_ == DateGeneration::TwentiethIMM
-                || *rule_ == DateGeneration::OldCDS
-                || *rule_ == DateGeneration::CDS) {
+                || *rule_ == DateGeneration::OldCDS) {
                 dates_.back() = calendar_.adjust(dates_.back(),
-                                                terminationDateConvention);
+                                                 terminationDateConvention);
             }
         }
 
