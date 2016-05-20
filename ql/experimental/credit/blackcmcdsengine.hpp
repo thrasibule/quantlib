@@ -36,9 +36,9 @@ namespace QuantLib {
 	    Users should check that this engine is using the same default and 
 		recoveries as in the index forecasting. Issue a warning? 
     */
-    class BalckConstantMaturityCDSEngine : public ConstantMaturityCDS::engine {
+    class BlackConstantMaturityCDSEngine : public ConstantMaturityCDS::engine {
     public:
-        BalckConstantMaturityCDSEngine(
+        BlackConstantMaturityCDSEngine(
               const Handle<DefaultProbabilityTermStructure>&,
               Real recoveryRate,
               const Handle<YieldTermStructure>& discountCurve,

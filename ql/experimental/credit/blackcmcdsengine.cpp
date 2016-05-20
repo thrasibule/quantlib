@@ -28,7 +28,7 @@
 
 namespace QuantLib {
 
-    BalckConstantMaturityCDSEngine::BalckConstantMaturityCDSEngine(
+    BlackConstantMaturityCDSEngine::BlackConstantMaturityCDSEngine(
             const Handle<DefaultProbabilityTermStructure>& dfts,
             Real recoveryRate,
             const Handle<YieldTermStructure>& discountCurve,
@@ -43,7 +43,7 @@ namespace QuantLib {
         registerWith(discountCurve_);
     }
 
-    void BalckConstantMaturityCDSEngine::calculate() const {
+    void BlackConstantMaturityCDSEngine::calculate() const {
         QL_REQUIRE(!discountCurve_.empty(),
                    "no discount term structure set");
         QL_REQUIRE(!probability_.empty(),
