@@ -25,7 +25,7 @@
 #include <ql/cashflows/simplecashflow.hpp>
 #include <ql/termstructures/yieldtermstructure.hpp>
 #include <ql/termstructures/credit/flathazardrate.hpp>
-#include <ql/pricingengines/credit/midpointcdsengine.hpp>
+#include <ql/pricingengines/credit/isdacdsengine.hpp>
 #include <ql/quotes/simplequote.hpp>
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
@@ -327,7 +327,7 @@ namespace QuantLib {
                 FlatHazardRate(0, WeekendsOnly(),
                                Handle<Quote>(flatRate), dayCounter)));
 
-        MidPointCdsEngine engine(probability, recoveryRate, discountCurve);
+        IsdaCdsEngine engine(probability, recoveryRate, discountCurve);
         setupArguments(engine.getArguments());
         const CreditDefaultSwap::results* results =
             dynamic_cast<const CreditDefaultSwap::results*>(
@@ -355,7 +355,7 @@ namespace QuantLib {
                              new FlatHazardRate(0, WeekendsOnly(),
                                                 flatHazardRate, dayCounter)));
 
-        MidPointCdsEngine engine(probability, conventionalRecovery,
+        IsdaCdsEngine engine(probability, conventionalRecovery,
                                  discountCurve, true);
         setupArguments(engine.getArguments());
         engine.calculate();
