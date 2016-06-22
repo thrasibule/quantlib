@@ -55,7 +55,6 @@ namespace QuantLib {
           isdaForwardsInCouponPeriod_(IsdaCdsEngine::Piecewise) {
 
         initializeDates();
-
         registerWith(discountCurve);
     }
 
@@ -81,7 +80,6 @@ namespace QuantLib {
           isdaForwardsInCouponPeriod_(IsdaCdsEngine::Piecewise) {
 
         initializeDates();
-
         registerWith(discountCurve);
     }
 
@@ -148,7 +146,12 @@ namespace QuantLib {
                 frequency, paymentConvention, rule, dayCounter,
                 recoveryRate, discountCurve, settlesAccrual,
                 paysAtDefaultTime,lastPeriodDayCounter,rebatesAccrual,
-                useIsdaEngine) {}
+                useIsdaEngine) {
+        swap_ = boost::make_shared<CreditDefaultSwap>(
+            Protection::Buyer, 100.0, 0.01, schedule_, paymentConvention_,
+            dayCounter_, settlesAccrual_, paysAtDefaultTime_, protectionStart_,
+            boost::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_);
+    }
 
     SpreadCdsHelper::SpreadCdsHelper(
                               Rate runningSpread,
@@ -170,7 +173,12 @@ namespace QuantLib {
                 frequency, paymentConvention, rule, dayCounter,
                 recoveryRate, discountCurve, settlesAccrual,
                 paysAtDefaultTime,lastPeriodDayCounter,rebatesAccrual,
-                useIsdaEngine) {}
+                useIsdaEngine) {
+        swap_ = boost::make_shared<CreditDefaultSwap>(
+            Protection::Buyer, 100.0, 0.01, schedule_, paymentConvention_,
+            dayCounter_, settlesAccrual_, paysAtDefaultTime_, protectionStart_,
+            boost::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_);
+    }
 
     Real SpreadCdsHelper::impliedQuote() const {
         swap_->recalculate();
@@ -182,10 +190,6 @@ namespace QuantLib {
     }
 
     void SpreadCdsHelper::resetEngine() {
-        swap_ = boost::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
-            Protection::Buyer, 100.0, 0.01, schedule_, paymentConvention_,
-            dayCounter_, settlesAccrual_, paysAtDefaultTime_, protectionStart_,
-            boost::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_));
 
         if (useIsdaEngine_) {
             swap_->setPricingEngine(boost::make_shared<IsdaCdsEngine>(
@@ -226,6 +230,11 @@ namespace QuantLib {
       upfrontSettlementDays_(upfrontSettlementDays),
       runningSpread_(runningSpread) {
         initializeDates();
+        swap_ = boost::make_shared<CreditDefaultSwap>(
+            Protection::Buyer, 100.0, 0.01, runningSpread_, schedule_,
+            paymentConvention_, dayCounter_, settlesAccrual_,
+            paysAtDefaultTime_, protectionStart_, upfrontDate_,
+            boost::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_);
     }
 
     UpfrontCdsHelper::UpfrontCdsHelper(
@@ -254,6 +263,11 @@ namespace QuantLib {
       upfrontSettlementDays_(upfrontSettlementDays),
       runningSpread_(runningSpread) {
         initializeDates();
+        swap_ = boost::make_shared<CreditDefaultSwap>(
+            Protection::Buyer, 100.0, 0.01, runningSpread_, schedule_,
+            paymentConvention_, dayCounter_, settlesAccrual_,
+            paysAtDefaultTime_, protectionStart_, upfrontDate_,
+            boost::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_);
     }
 
     void UpfrontCdsHelper::initializeDates() {
@@ -264,11 +278,6 @@ namespace QuantLib {
     }
 
     void UpfrontCdsHelper::resetEngine() {
-        swap_ = boost::shared_ptr<CreditDefaultSwap>(new CreditDefaultSwap(
-            Protection::Buyer, 100.0, 0.01, runningSpread_, schedule_,
-            paymentConvention_, dayCounter_, settlesAccrual_,
-            paysAtDefaultTime_, protectionStart_, upfrontDate_,
-            boost::shared_ptr<Claim>(), lastPeriodDC_, rebatesAccrual_));
         if (useIsdaEngine_) {
             swap_->setPricingEngine(boost::make_shared<IsdaCdsEngine>(
                 probability_, recoveryRate_, discountCurve_, false,
