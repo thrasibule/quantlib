@@ -158,7 +158,9 @@ namespace QuantLib {
         Date d1;
         std::vector<Date>::const_iterator it =
             std::upper_bound(nodes.begin(), nodes.end(), effectiveProtectionStart);
-
+        std::cout << "beginning of protection leg" << std::endl;
+        std::cout<< d0 << std::endl;
+        std::cout << P0 << "\t" << Q0 << std::endl;
         for(;it != nodes.end(); ++it) {
             if(*it > maturity) {
                 d1 = maturity;
@@ -166,8 +168,10 @@ namespace QuantLib {
             } else {
                 d1 = *it;
             }
+            std::cout << d1 << std::endl;
             Real P1 = discountCurve_->discount(d1);
             Real Q1 = probability_->survivalProbability(d1);
+            std::cout << P1 << "\t" << Q1 << std::endl;
 
             Real fhat = std::log(P0) - std::log(P1);
             Real hhat = std::log(Q0) - std::log(Q1);
@@ -182,6 +186,8 @@ namespace QuantLib {
             } else {
                 protectionNpv += hhat / (fhphh + nFix) * (P0 * Q0 - P1 * Q1);
             }
+            std::cout<< "protection NPV" << std::endl;
+            std::cout << protectionNpv << std::endl;
             d0 = d1;
             P0 = P1;
             Q0 = Q1;
