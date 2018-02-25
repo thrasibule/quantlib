@@ -139,10 +139,23 @@ namespace QuantLib {
         } else{
             QL_FAIL("Credit curve must be flat forward interpolated");
         }
-
+        std::cout<< "yield Dates" << std::endl;
+        for(auto &r: yDates) {
+            std::cout<< r << "\t";
+        }
+        std::cout << std::endl;
+        std::cout << "credit Dates" << std::endl;
+        for(auto &r: cDates) {
+            std::cout<< r << "\t";
+        }
+        std::cout << std::endl;
         std::vector<Date> nodes;
         std::set_union(yDates.begin(), yDates.end(), cDates.begin(), cDates.end(), std::back_inserter(nodes));
-
+        std::cout << "nodes Dates" << std::endl;
+        for(auto &r: nodes) {
+            std::cout << r << "\t";
+        }
+        std::cout << std::endl;
 
         if(nodes.empty()){
             nodes.push_back(maturity);
