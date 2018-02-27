@@ -63,7 +63,7 @@ namespace QuantLib {
             .withLastPeriodDayCounter(lastPeriodDayCounter);
 
         Date effectiveUpfrontDate = schedule.calendar().advance(
-            protectionStart_, 2, Days, convention);
+            protectionStart_ - 1, 3, Days, convention);
         // '2' is used above since the protection start is assumed to be
         //   on trade_date + 1
 
