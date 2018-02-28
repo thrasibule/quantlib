@@ -64,8 +64,8 @@ namespace QuantLib {
 
         Date effectiveUpfrontDate = schedule.calendar().advance(
             protectionStart_ - 1, 3, Days, convention);
-        // '2' is used above since the protection start is assumed to be
-        //   on trade_date + 1
+        // the upfront valuation date is trade_date + 3 (using calendar) and protection start is assumed
+        // to be T+1 (independent of the calendar)
 
         if(rebatesAccrual) {
             boost::shared_ptr<FixedRateCoupon> firstCoupon =
