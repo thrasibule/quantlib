@@ -81,14 +81,14 @@ namespace QuantLib {
                    "probability term structure day counter ("
                        << probability_->dayCounter() << ") should be "
                        << "Act/365(Fixed)");
-        QL_REQUIRE(discountCurve_->referenceDate() == evalDate,
-                   "yield term structure reference date ("
-                       << discountCurve_->referenceDate()
-                       << " should be evaluation date (" << evalDate << ")");
-        QL_REQUIRE(probability_->referenceDate() == evalDate,
-                   "probability term structure reference date ("
-                       << probability_->referenceDate()
-                       << " should be evaluation date (" << evalDate << ")");
+        //QL_REQUIRE(discountCurve_->referenceDate() == evalDate,
+                   //"yield term structure reference date ("
+                       //<< discountCurve_->referenceDate()
+                       //<< " should be evaluation date (" << evalDate << ")");
+        //QL_REQUIRE(probability_->referenceDate() == evalDate,
+                   //"probability term structure reference date ("
+                       //<< probability_->referenceDate()
+                       //<< " should be evaluation date (" << evalDate << ")");
         QL_REQUIRE(arguments_.settlesAccrual,
                    "ISDA engine not compatible with non accrual paying CDS");
         QL_REQUIRE(arguments_.paysAtDefaultTime,
@@ -96,7 +96,11 @@ namespace QuantLib {
         QL_REQUIRE(boost::dynamic_pointer_cast<FaceValueClaim>(
                        arguments_.claim) != NULL,
                    "ISDA engine not compatible with non face value claim");
-
+        double df0 = (discountCurve_->referenceDate() < evalDate) ?
+            discountCurve_->discount(evalDate) : 1.;
+        double sp0 = (probability_->referenceDate() < evalDate) ?
+            probability_->survivalProbability(evalDate) : 1.;
+        
         Date maturity = arguments_.maturity;
         Date effectiveProtectionStart =
             std::max<Date>(arguments_.protectionStart, evalDate + 1);
@@ -188,7 +192,7 @@ namespace QuantLib {
         protectionNpv *= arguments_.claim->amount(
             Null<Date>(), arguments_.notional, recoveryRate_);
 
-        results_.defaultLegNPV = protectionNpv;
+        results_.defaultLegNPV = protectionNpv / (df0 * sp0);
 
         // premium leg pricing (npv is always positive at this stage)
 
@@ -207,6 +211,7 @@ namespace QuantLib {
 
             if (!arguments_.leg[i]->hasOccurred(evalDate,
                                                 includeSettlementDateFlows_)) {
+                std::cout << "I'm here\n" << includeSettlementDateFlows_ << std::endl;
                 premiumNpv +=
                     coupon->amount() *
                     discountCurve_->discount(coupon->date()) *
@@ -279,7 +284,7 @@ namespace QuantLib {
         }
 
 
-        results_.couponLegNPV = premiumNpv + defaultAccrualNpv;
+        results_.couponLegNPV = (premiumNpv + defaultAccrualNpv) / (df0 * sp0);
 
         // upfront flow npv
 
@@ -288,7 +293,7 @@ namespace QuantLib {
         if (!arguments_.upfrontPayment->hasOccurred(
                 evalDate, includeSettlementDateFlows_)) {
             upfPVO1 =
-                discountCurve_->discount(arguments_.upfrontPayment->date());
+                discountCurve_->discount(arguments_.upfrontPayment->date()) / df0;
             if(arguments_.upfrontPayment->amount() != 0.) {
                 results_.upfrontNPV = upfPVO1 * arguments_.upfrontPayment->amount();
             }
@@ -316,7 +321,6 @@ namespace QuantLib {
 
         results_.value = results_.defaultLegNPV + results_.couponLegNPV +
                          results_.upfrontNPV + results_.accrualRebateNPV;
-
         results_.errorEstimate = Null<Real>();
 
         if (results_.couponLegNPV != 0.0) {

@@ -31,6 +31,7 @@
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
 #include <boost/make_shared.hpp>
+#include <iostream>
 
 namespace QuantLib {
 
@@ -67,13 +68,14 @@ namespace QuantLib {
         // the upfront valuation date is trade_date + 3 (using calendar) and protection start is assumed
         // to be T+1 (independent of the calendar)
 
-        if(rebatesAccrual) {
-            boost::shared_ptr<FixedRateCoupon> firstCoupon =
-                boost::dynamic_pointer_cast<FixedRateCoupon>(leg_[0]);
-
+        if (rebatesAccrual) {
+            Size i = 0;
+            while (leg_[i]->hasOccurred(protectionStart_, false)) ++i;
+            boost::shared_ptr<FixedRateCoupon> coupon =
+                boost::dynamic_pointer_cast<FixedRateCoupon>(leg_[i]);
             const Date& rebateDate = effectiveUpfrontDate;
             accrualRebate_ = boost::make_shared<SimpleCashFlow>(
-                firstCoupon->accruedAmount(protectionStart_),
+                coupon->accruedAmount(protectionStart_),
                 rebateDate);
         }
 
@@ -119,7 +121,7 @@ namespace QuantLib {
         // If empty, adjust to T+3 standard settlement, alternatively add
         //  an arbitrary date to the constructor
         Date effectiveUpfrontDate = upfrontDate == Null<Date>() ?
-            schedule.calendar().advance(protectionStart_, 2, Days, convention) :
+            schedule.calendar().advance(protectionStart_ -1 , 3, Days, convention) :
             upfrontDate;
         // '2' is used above since the protection start is assumed to be
         //   on trade_date + 1
@@ -128,17 +130,14 @@ namespace QuantLib {
 
         QL_REQUIRE(effectiveUpfrontDate >= protectionStart_,
                    "upfront can not be due before contract start");
-
-        if(rebatesAccrual) {
-            boost::shared_ptr<FixedRateCoupon> firstCoupon =
-                boost::dynamic_pointer_cast<FixedRateCoupon>(leg_[0]);
-            // adjust to T+3 standard settlement, alternatively add
-            //  an arbitrary date to the constructor
-
+        if (rebatesAccrual) {
+            Size i = 0;
+            while (leg_[i]->hasOccurred(protectionStart_, false)) ++i;
+            boost::shared_ptr<FixedRateCoupon> coupon =
+                boost::dynamic_pointer_cast<FixedRateCoupon>(leg_[i]);
             const Date& rebateDate = effectiveUpfrontDate;
-
             accrualRebate_ = boost::make_shared<SimpleCashFlow>(
-                firstCoupon->accruedAmount(protectionStart_),
+                coupon->accruedAmount(protectionStart_),
                 rebateDate);
         }
 
