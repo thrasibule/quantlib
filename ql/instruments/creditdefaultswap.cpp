@@ -31,6 +31,7 @@
 #include <ql/math/solvers1d/brent.hpp>
 #include <ql/time/calendars/weekendsonly.hpp>
 #include <boost/make_shared.hpp>
+#include <iostream>
 
 namespace QuantLib {
 
@@ -72,8 +73,14 @@ namespace QuantLib {
             while (leg_[i]->hasOccurred(protectionStart_, false)) ++i;
             boost::shared_ptr<FixedRateCoupon> coupon =
                 boost::dynamic_pointer_cast<FixedRateCoupon>(leg_[i]);
-            QL_REQUIRE(coupon->accrualStartDate() <= protectionStart_,
-                       "contract cannot start before accrual");
+            if(coupon-> accrualStartDate() <= protectionStart_) {
+                std::cout << "protection start" << protectionStart_ << std::endl;
+                std::cout << "i:" << i << std::endl;
+                std::cout<< "accrual start" << coupon->accrualStartDate() << std::endl;
+                std::cout << "rate" << std::endl;
+            }
+            //QL_REQUIRE(coupon->accrualStartDate() <= protectionStart_,
+                       //"contract cannot start before accrual");
             const Date& rebateDate = effectiveUpfrontDate;
             accrualRebate_ = boost::make_shared<SimpleCashFlow>(
                 coupon->accruedAmount(protectionStart_),
@@ -136,8 +143,15 @@ namespace QuantLib {
             while (leg_[i]->hasOccurred(protectionStart_, false)) ++i;
             boost::shared_ptr<FixedRateCoupon> coupon =
                 boost::dynamic_pointer_cast<FixedRateCoupon>(leg_[i]);
-            QL_REQUIRE(coupon->accrualStartDate() <= protectionStart_,
-                       "contract cannot start before accrual");
+            //QL_REQUIRE(coupon->accrualStartDate() <= protectionStart_,
+                       //"contract cannot start before accrual");
+            if(coupon-> accrualStartDate() <= protectionStart_) {
+                std::cout << "protection start" << protectionStart_ << std::endl;
+                std::cout << "i:" << i << std::endl;
+                std::cout<< "accrual start" << coupon->accrualStartDate() << std::endl;
+                std::cout << "upfront" <<std::endl;
+                std::cout << "rate" << std::endl;
+            }
             const Date& rebateDate = effectiveUpfrontDate;
             accrualRebate_ = boost::make_shared<SimpleCashFlow>(
                 coupon->accruedAmount(protectionStart_),
