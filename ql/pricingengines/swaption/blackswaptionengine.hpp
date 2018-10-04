@@ -288,6 +288,9 @@ namespace QuantLib {
                         false, discountDate);
             annuity = std::fabs(fixedLegCashBPS / basisPoint) *
                       discountCurve_->discount(discountDate);
+            if(npvDate_ != Date()) {
+                annuity /= discountCurve_->discount(npvDate_);
+            }
         } else {
             QL_FAIL("invalid (settlementType, settlementMethod) pair");
         }
