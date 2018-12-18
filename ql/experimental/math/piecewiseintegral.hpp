@@ -30,7 +30,7 @@
 #include <ql/math/integrals/integral.hpp>
 #include <ql/math/comparison.hpp>
 #include <ql/shared_ptr.hpp>
-
+#include <algorithm>
 #include <vector>
 
 namespace QuantLib {
@@ -67,10 +67,10 @@ inline Real PiecewiseIntegral::integrate(const ext::function<Real(Real)> &f,
                                          Real a, Real b) const {
 
     std::vector<Real>::const_iterator a0 =
-        std::lower_bound(criticalPoints_.begin(), criticalPoints_.end(), a);
+        std::lower_bound(criticalPoints_.cbegin(), criticalPoints_.cend(), a);
 
     std::vector<Real>::const_iterator b0 =
-        std::lower_bound(criticalPoints_.begin(), criticalPoints_.end(), b);
+        std::lower_bound(criticalPoints_.cbegin(), criticalPoints_.cend(), b);
 
     if (a0 == criticalPoints_.end()) {
         Real tmp = 1.0;
